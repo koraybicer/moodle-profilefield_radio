@@ -1,3 +1,4 @@
+```php
 <?php
 // This file is part of Moodle - http://moodle.org/
 //
@@ -15,73 +16,77 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    profilefield
- * @subpackage radio
+ * Radio button profile field class.
+ *
+ * @package    profilefield_radio
  * @copyright  2012 onwards Dan Marsden {@link http://danmarsden.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 class profile_field_radio extends profile_field_base {
-    var $options;
-    var $datakey;
+    /** @var array $options List of radio options */
+    protected array $options;
+    
+    /** @var int|null $datakey Selected option key */
+    protected ?int $datakey;
 
     /**
-     * Constructor method.
-     * Pulls out the options for the radio from the database and sets the
-     * the corresponding key for the data if it exists
+     * Constructor
+     *
+     * @param int $fieldid Profile field id
+     * @param int $userid User id
      */
-    function profile_field_radio($fieldid=0, $userid=0) {
-        //first call parent constructor
-        $this->profile_field_base($fieldid, $userid);
-
-        /// Param 1 for radio type is the options
+    public function __construct(int $fieldid = 0, int $userid = 0) {
+        parent::__construct($fieldid, $userid);
+        
         $options = explode("\n", $this->field->param1);
-        $this->options = array();
-        foreach($options as $key => $option) {
-            $this->options[$key] = format_string($option);//multilang formatting
-        }
-
-        /// Set the data key
-        if ($this->data !== NULL) {
-            $this->datakey = (int)array_search($this->data, $this->options);
+        $this->options = array_map('format_string', $options);
+        
+        if ($this->data !== null) {
+            $this->datakey = (int)array_search($this->data, $this->options, true);
         }
     }
 
     /**
-     * Create the code snippet for this field instance
-     * Overwrites the base class method
-     * @param   object   moodleform instance
+     * Add field to form
+     *
+     * @param moodleform $mform Moodle form instance
      */
-    function edit_field_add(&$mform) {
-        $radioarray=array();
-        $attributes = array();
+    public function edit_field_add($mform): void {
+        $radioarray = [];
+        $attributes = [];
+        
         foreach ($this->options as $option) {
             $name = format_string($option);
-            if (!empty($this->field->param2)) { //dirty hack
-                $name .='<br/>';
+            if (!empty($this->field->param2)) {
+                $name .= '<br/>';
             }
-            $radioarray[] =& $mform->createElement('radio',  $this->inputname, '', $name, format_string($option), $attributes);
+            $radioarray[] = $mform->createElement('radio', $this->inputname, '', 
+                $name, format_string($option), $attributes);
         }
-        $mform->addGroup($radioarray, $this->inputname.'_grp', format_string($this->field->name), array(' '), false);
-
+        
+        $mform->addGroup($radioarray, $this->inputname . '_grp', 
+            format_string($this->field->name), [' '], false);
+            
         if ($this->is_required()) {
             $mform->addRule($this->inputname, get_string('required'), 'required', null, 'client');
         }
     }
 
     /**
-     * HardFreeze the field if locked.
-     * @param   object   instance of the moodleform class
+     * Lock field if required
+     *
+     * @param moodleform $mform Moodle form instance
      */
-    function edit_field_set_locked(&$mform) {
+    public function edit_field_set_locked($mform): void {
         if (!$mform->elementExists($this->inputname)) {
             return;
         }
-        if ($this->is_locked() and !has_capability('moodle/user:update', get_context_instance(CONTEXT_SYSTEM))) {
+
+        if ($this->is_locked() && !has_capability('moodle/user:update', context_system::instance())) {
             $mform->hardFreeze($this->inputname);
             $mform->setConstant($this->inputname, $this->datakey);
         }
     }
 }
-
-
+```

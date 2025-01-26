@@ -15,51 +15,77 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    profilefield
- * @subpackage radio
+ * Radio button profile field definition.
+ *
+ * @package    profilefield_radio
  * @copyright  2012 onwards Dan Marsden {@link http://danmarsden.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 class profile_define_radio extends profile_define_base {
 
-    function define_form_specific(&$form) {
-        /// Param 1 for menu type contains the options
-        $form->addElement('textarea', 'param1', get_string('profilemenuoptions', 'admin'), array('rows' => 6, 'cols' => 40));
+    /**
+     * Adds elements to the form for creating/editing this type of profile field.
+     *
+     * @param moodleform $form
+     */
+    public function define_form_specific($form): void {
+        // Options for the radio buttons
+        $form->addElement('textarea', 'param1', 
+            get_string('profilemenuoptions', 'admin'),
+            ['rows' => 6, 'cols' => 40]
+        );
         $form->setType('param1', PARAM_MULTILANG);
 
-        /// Default data
-        $form->addElement('text', 'defaultdata', get_string('profiledefaultdata', 'admin'), 'size="50"');
+        // Default value
+        $form->addElement('text', 'defaultdata', 
+            get_string('profiledefaultdata', 'admin'),
+            ['size' => 50]
+        );
         $form->setType('defaultdata', PARAM_MULTILANG);
 
-        // Display horizontal or vertical.
-        $options = array(get_string('horizontal', 'profilefield_radio'), get_string('vertical', 'profilefield_radio'));
-        $form->addElement('select', 'param2', get_string('display', 'profilefield_radio'), $options);
+        // Display orientation
+        $orientations = [
+            0 => get_string('horizontal', 'profilefield_radio'),
+            1 => get_string('vertical', 'profilefield_radio')
+        ];
+        $form->addElement('select', 'param2', 
+            get_string('display', 'profilefield_radio'),
+            $orientations
+        );
     }
 
-    function define_validate_specific($data, $files) {
-        $err = array();
-
+    /**
+     * Validates the form field data.
+     *
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
+    public function define_validate_specific($data, $files): array {
+        $errors = [];
         $data->param1 = str_replace("\r", '', $data->param1);
+        $options = explode("\n", $data->param1);
 
-        /// Check that we have at least 2 options
-        if (($options = explode("\n", $data->param1)) === false) {
-            $err['param1'] = get_string('profilemenunooptions', 'admin');
-        } elseif (count($options) < 2) {
-            $err['param1'] = get_string('profilemenutoofewoptions', 'admin');
-
-        /// Check the default data exists in the options
-        } elseif (!empty($data->defaultdata) and !in_array($data->defaultdata, $options)) {
-            $err['defaultdata'] = get_string('profilemenudefaultnotinoptions', 'admin');
+        if (empty($options)) {
+            $errors['param1'] = get_string('profilemenunooptions', 'admin');
+        } else if (count($options) < 2) {
+            $errors['param1'] = get_string('profilemenutoofewoptions', 'admin');
+        } else if (!empty($data->defaultdata) && !in_array($data->defaultdata, $options, true)) {
+            $errors['defaultdata'] = get_string('profilemenudefaultnotinoptions', 'admin');
         }
-        return $err;
+
+        return $errors;
     }
 
-    function define_save_preprocess($data) {
+    /**
+     * Preprocesses data before it is saved.
+     *
+     * @param stdClass $data
+     * @return stdClass
+     */
+    public function define_save_preprocess($data): object {
         $data->param1 = str_replace("\r", '', $data->param1);
-
         return $data;
     }
-
 }
-
-

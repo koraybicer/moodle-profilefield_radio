@@ -15,14 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    profilefield
- * @subpackage radio
- * @copyright  2012 onwards Dan Marsden {@link http://danmarsden.com}
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+* Version information for profilefield_radio
+*
+* @package    profilefield_radio
+* @copyright  2012 onwards Dan Marsden {@link http://danmarsden.com}
+* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+*/
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2012012400;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2011112900;        // Requires this Moodle version
-$plugin->component = 'profilefield_radio'; // Full name of the plugin (used for diagnostics)
+$plugin->version   = 2024012600;        // Version date: YYYYMMDDXX
+$plugin->requires  = 2022112800;        // Requires Moodle 4.2
+$plugin->supported = [402, 403];        // Supported Moodle versions: 4.2-4.3
+$plugin->component = 'profilefield_radio';
+$plugin->maturity  = MATURITY_STABLE;
+$plugin->release   = '4.2.0';

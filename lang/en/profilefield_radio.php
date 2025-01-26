@@ -15,14 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'profilefield_radio', language 'en'
- *
- * @package   profilefield_radio
- * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+* Strings for component 'profilefield_radio', language 'en'
+*
+* @package   profilefield_radio
+* @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
+* @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+*/
 
+// Plugin strings
 $string['pluginname'] = 'Radio buttons';
+$string['pluginname_help'] = 'Radio button field for user profiles';
 $string['vertical'] = 'Vertical';
-$string['horizontal'] = 'Horizontal';
-$string['display'] = 'Display';
+$string['horizontal'] = 'Horizontal'; 
+$string['display'] = 'Display orientation';
+$string['privacy:metadata'] = 'The Radio buttons profile field plugin does not store any personal data.';
