@@ -1,4 +1,3 @@
-```php
 <?php
 // This file is part of Moodle - http://moodle.org/
 //
@@ -89,4 +88,3 @@ class profile_field_radio extends profile_field_base {
         }
     }
 }
-```
